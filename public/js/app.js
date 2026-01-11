@@ -5,35 +5,32 @@ const results = document.getElementById('results');
 
 // When user submits form
 form.addEventListener('submit', function(e) {
-    e.preventDefault(); // Stop page from reloading
+    e.preventDefault();
     
-    const movieTitle = input.value; // Get what user typed
+    const movieTitle = input.value.trim();
+    if (!movieTitle) return;
     
-    // Show loading message
-    results.innerHTML = '<p>Loading...</p>';
+    results.innerHTML = '<p class="loading">Loading...</p>';
     
-    // Ask server for movies
-    fetch('/api/search?title=' + movieTitle)
-        .then(response => response.json()) // Get JSON data
+    fetch('/api/search?title=' + encodeURIComponent(movieTitle))
+        .then(response => response.json())
         .then(data => {
-            // Clear results
             results.innerHTML = '';
             
-            // Show each movie
+            if (data.error || data.movies.length === 0) {
+                results.innerHTML = '<p class="error">No movies found!</p>';
+                return;
+            }
+            
             data.movies.forEach(movie => {
-                // Create a div for the movie
                 const card = document.createElement('div');
                 card.className = 'movie-card';
                 
-                // Get the year
                 const year = movie.release_date ? movie.release_date.slice(0, 4) : 'N/A';
-                
-                // Get poster image URL
                 const posterUrl = movie.poster_path 
                     ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
                     : 'https://via.placeholder.com/500x750?text=No+Poster';
                 
-                // Put movie info in the card with poster
                 card.innerHTML = `
                     <img src="${posterUrl}" alt="${movie.title} poster" class="movie-poster">
                     <div class="movie-details">
@@ -42,40 +39,46 @@ form.addEventListener('submit', function(e) {
                     </div>
                 `;
                 
-                // When user clicks, get similar movies
                 card.addEventListener('click', function() {
-                    getSimilarMovies(movie.id, movie.title);
+                    getSimilarMovies(movie.id, movie.title, movie.overview);
                 });
                 
-                // Add card to page
                 results.appendChild(card);
             });
+        })
+        .catch(() => {
+            results.innerHTML = '<p class="error">Something went wrong!</p>';
         });
 });
 
 // Function to get similar movies
-function getSimilarMovies(movieId, movieTitle) {
-    // Show loading
-    results.innerHTML = '<p>Finding similar movies...</p>';
+function getSimilarMovies(movieId, movieTitle, overview) {
+    results.innerHTML = '<p class="loading">Finding similar movies...</p>';
     
-    // Ask server for similar movies
     fetch('/api/similar?movieId=' + movieId)
         .then(response => response.json())
         .then(data => {
-            // Clear results
-            results.innerHTML = '<h2>Similar to: ' + movieTitle + '</h2>';
+            results.innerHTML = `
+                <div class="selected-movie">
+                    <h2>Selected: ${movieTitle}</h2>
+                    <p class="movie-description">${overview || 'No description available.'}</p>
+                </div>
+                <h2>Similar Movies</h2>
+            `;
             
-            // Show each similar movie
+            if (data.error || data.similar.length === 0) {
+                results.innerHTML += '<p class="error">No similar movies found!</p>';
+                return;
+            }
+            
             data.similar.forEach(movie => {
                 const card = document.createElement('div');
                 card.className = 'movie-card';
                 
                 const year = movie.release_date ? movie.release_date.slice(0, 4) : 'N/A';
-                
-                // Get poster image URL
                 const posterUrl = movie.poster_path 
-                    ? `https://image.tmdb.org/t/p/w200${movie.poster_path}`
-                    : 'https://via.placeholder.com/200x300?text=No+Poster';
+                    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                    : 'https://via.placeholder.com/500x750?text=No+Poster';
                 
                 card.innerHTML = `
                     <img src="${posterUrl}" alt="${movie.title} poster" class="movie-poster">
@@ -87,5 +90,8 @@ function getSimilarMovies(movieId, movieTitle) {
                 
                 results.appendChild(card);
             });
+        })
+        .catch(() => {
+            results.innerHTML = '<p class="error">Something went wrong!</p>';
         });
 }
