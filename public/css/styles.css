@@ -10,47 +10,48 @@ body {
 
 header {
     background: linear-gradient(135deg, #1a0033 0%, #330066 100%);
-    padding: 30px;
+    padding: 20px;
     text-align: center;
     border-bottom: 3px solid #ff00ff;
     box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 2rem;
     color: #00ffff;
     margin: 0;
     text-shadow: 
         0 0 10px #00ffff,
         0 0 20px #00ffff,
         0 0 30px #ff00ff;
-    letter-spacing: 5px;
+    letter-spacing: 3px;
 }
 
 header p {
     color: #ff00ff;
     margin: 10px 0 0 0;
+    font-size: 0.9rem;
     text-shadow: 0 0 10px #ff00ff;
 }
 
 main {
     max-width: 1200px;
-    margin: 40px auto;
-    padding: 20px;
+    width: 100%;
+    margin: 20px auto;
+    padding: 15px;
     flex: 1;
 }
 
 form {
     display: flex;
+    flex-direction: column;
     gap: 10px;
-    margin-bottom: 40px;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
+    margin-bottom: 30px;
+    width: 100%;
 }
 
 input {
-    flex: 1;
+    width: 100%;
     padding: 15px;
     font-size: 1rem;
     border: 2px solid #00ffff;
@@ -58,6 +59,7 @@ input {
     background: rgba(0, 255, 255, 0.1);
     color: #00ffff;
     font-family: 'Courier New', monospace;
+    box-sizing: border-box;
 }
 
 input::placeholder {
@@ -70,6 +72,7 @@ input:focus {
 }
 
 button {
+    width: 100%;
     padding: 15px 30px;
     background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%);
     color: #0a0015;
@@ -92,14 +95,15 @@ h2 {
     color: #00ffff;
     text-align: center;
     margin: 30px 0 20px 0;
+    font-size: 1.5rem;
     text-shadow: 0 0 10px #00ffff;
 }
 
 #results {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: 1fr;
     gap: 20px;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
 .movie-card {
@@ -125,7 +129,9 @@ h2 {
 
 .movie-poster {
     width: 100%;
-    height: 300px;
+    max-width: 300px;
+    height: auto;
+    aspect-ratio: 2/3;
     object-fit: cover;
     border-radius: 5px;
     border: 2px solid #00ffff;
@@ -138,7 +144,7 @@ h2 {
 }
 
 .movie-title {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: #00ffff;
     margin-bottom: 10px;
     text-shadow: 0 0 5px #00ffff;
@@ -157,4 +163,68 @@ footer {
     border-top: 3px solid #ff00ff;
     color: #00ffff;
     box-shadow: 0 -5px 20px rgba(255, 0, 255, 0.3);
+}
+
+/* Tablet and up */
+@media (min-width: 600px) {
+    h1 {
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+    }
+
+    main {
+        padding: 20px;
+        margin: 30px auto;
+    }
+
+    form {
+        flex-direction: row;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    button {
+        width: auto;
+    }
+
+    #results {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .movie-title {
+        font-size: 1.2rem;
+    }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+    h1 {
+        font-size: 3rem;
+        letter-spacing: 5px;
+    }
+
+    header {
+        padding: 30px;
+    }
+
+    header p {
+        font-size: 1rem;
+    }
+
+    main {
+        margin: 40px auto;
+    }
+
+    h2 {
+        font-size: 2rem;
+    }
+
+    #results {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+
+    .movie-poster {
+        height: 300px;
+    }
 }
