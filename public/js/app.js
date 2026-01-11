@@ -2,6 +2,7 @@
 const form = document.getElementById('searchForm');
 const input = document.getElementById('movieInput');
 const results = document.getElementById('results');
+const welcomeSection = document.querySelector('.welcome-section');
 
 // When user submits form
 form.addEventListener('submit', function(e) {
@@ -9,6 +10,11 @@ form.addEventListener('submit', function(e) {
     
     const movieTitle = input.value.trim();
     if (!movieTitle) return;
+    
+    // Hide welcome section after first search
+    if (welcomeSection) {
+        welcomeSection.style.display = 'none';
+    }
     
     results.innerHTML = '<p class="loading">Loading...</p>';
     
